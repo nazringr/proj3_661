@@ -60,3 +60,33 @@ def resize_obstacle(space):
             if space[l][m][0] == 20:
                 boundry.append((m,500-l))
     return boundry
+
+
+#Getting User Inputs For the Start node from the user
+def User_Inputs_Start(Obs_Coords):
+    while True:
+        x = int(input("Enter the Initial x node: "))
+        y = int(input("Enter the Initial y node: "))
+        z = int(input("Enter the orientation of robot at start pt.(in degrees): "))
+        
+        if((x>=0) or (x<=1200)) and (y>=0) or (y<=500):
+            if (x,y) not in Obs_Coords and ((x + Robot_Radius),y) not in Obs_Coords and ((x-Robot_Radius),y) not in Obs_Coords and (x,(y+Robot_Radius)) not in Obs_Coords  and (x,(y-Robot_Radius)) not in Obs_Coords:
+                start_node = (x,y,z)
+                return start_node
+            else:
+                print("The Entered Start Node is in obstacle space")
+
+#Getting User Input for the Goal Node from the user
+def User_Inputs_Goal(Obs_Coords):
+    while True:
+        x = int(input("Enter the Goal x node: "))
+        y = int(input("Enter the Goal y node: "))
+        z = int(input("Enter the orientation of robot at goal pt.(in degrees): "))
+        #goal_node = (x,y)
+        if((x>=0) or (x<=1200)) and (y>=0) or (y<=500):
+            if (x,y) not in Obs_Coords and ((x + Robot_Radius),y) not in Obs_Coords and ((x-Robot_Radius),y) not in Obs_Coords and (x,(y+Robot_Radius)) not in Obs_Coords  and (x,(y-Robot_Radius)) not in Obs_Coords:
+                goal_node=(x,y,z)
+                break
+            else:
+                print("The Entered Goal Node is in obstacle space")
+    return goal_node
