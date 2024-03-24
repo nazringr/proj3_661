@@ -49,3 +49,14 @@ def obstacle_space(s):
                 boundry.append((x,500-y))
     return boundry
 
+def resize_obstacle(space):
+    h,w,_ = space.shape
+    for l in range(h):
+        for m in range(w):
+            if space[l][m][2] == 255:
+                boundry.append((m,500-l))
+            if space[l][m][1] == 255:
+                boundry.append((m,500-l))
+            if space[l][m][0] == 20:
+                boundry.append((m,500-l))
+    return boundry
