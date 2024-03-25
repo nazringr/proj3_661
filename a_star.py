@@ -381,7 +381,7 @@ if __name__ == '__main__':
             print("Generating video: ", 70+int((i/len(x_path))*30), "%")
 
     # Creating the video from the saved frames
-    generate_video("frame", "generate_video.mp4", 30)  # Default frame rate = 30
+    generate_video("frame", "visualize_path.mp4", 30)  # Default frame rate = 30
 
     timer_stop = time.time()
     C_time = timer_stop - timer_start
