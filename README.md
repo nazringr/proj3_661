@@ -37,7 +37,7 @@ pip install numpy matplotlib opencv-python
 2. **Running the Script**: Navigate to the script's directory in your terminal and run:
 
     ```sh
-    python a_star.py
+    python a_star_nazrin_onkar.py
     ```
 
 3. **Input Parameters**: The script will prompt you for several inputs:
