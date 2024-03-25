@@ -67,6 +67,6 @@ This project is open-sourced under the MIT License. Feel free to use, modify, an
 
 # Authors
 Nazrin Gurbanova, UID: 120426469, Directory ID: nazrin
-## Onkar Kher  
+Onkar Kher, UID: 120407062, Directory ID: okher  
 
 ---
