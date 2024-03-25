@@ -66,7 +66,7 @@ pip install numpy matplotlib opencv-python
 This project is open-sourced under the MIT License. Feel free to use, modify, and distribute the code as per the license conditions.
 
 # Authors
-## Nazrin Gurbanova
+Nazrin Gurbanova, UID: 120426469, Directory ID: nazrin
 ## Onkar Kher  
 
 ---
