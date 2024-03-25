@@ -7,7 +7,7 @@ This Python script implements the A* search algorithm to find an optimal path fo
 
 - **Obstacle Space Definition**: Includes predefined obstacles in a 2D space where the robot cannot traverse.
 - **Dynamic Obstacle Clearance and Robot Radius**: Users can input the obstacle clearance and the robot's radius to adjust the navigable space dynamically.
-- **A* Pathfinding Algorithm**: Utilizes the A* algorithm to find the shortest path from a start point to a goal point, considering the robot's orientation.
+- **A\* Pathfinding Algorithm**: Utilizes the A* algorithm to find the shortest path from a start point to a goal point, considering the robot's orientation.
 - **Visualization and Video Generation**: Outputs visualizations of the obstacle space, the explored nodes, the optimal path, and a video showing the step-by-step pathfinding process.
 
 ## Dependencies
