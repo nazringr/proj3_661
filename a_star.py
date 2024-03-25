@@ -355,8 +355,8 @@ if __name__ == '__main__':
     all_nodes,flag = a_star_algorithm(start_node, goal_node, obs_space_array, robot_step_size)
     
     # Calculating the optimal path from start to the goal node 
-    if (flag)==1:
-        x_path,y_path = backtrack_path(goal_node)
+    if (flag) == 1:
+        x_path, y_path = backtrack_path(goal_node)
     else:
         print("No path could be found")
         
