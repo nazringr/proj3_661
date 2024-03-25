@@ -3,6 +3,12 @@
 
 This Python script implements the A* search algorithm to find an optimal path for a robot navigating through a specified obstacle space. The obstacle space is defined with specific obstacles, including rectangles and a hexagon, with added functionalities such as obstacle clearance and robot radius consideration. The script generates a visualization of the explored nodes, the final path taken, and a video showing the pathfinding process.
 
+
+# Authors
+Nazrin Gurbanova, UID: 120426469, Directory ID: nazrin
+
+Onkar Kher, UID: 120407062, Directory ID: okher  
+
 ## Features
 
 - **Obstacle Space Definition**: Includes predefined obstacles in a 2D space where the robot cannot traverse.
@@ -65,9 +71,5 @@ pip install numpy matplotlib opencv-python
 
 This project is open-sourced under the MIT License. Feel free to use, modify, and distribute the code as per the license conditions.
 
-# Authors
-Nazrin Gurbanova, UID: 120426469, Directory ID: nazrin
-
-Onkar Kher, UID: 120407062, Directory ID: okher  
 
 ---
