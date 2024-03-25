@@ -7,7 +7,7 @@ This Python script implements the A* search algorithm to find an optimal path fo
 
 - **Obstacle Space Definition**: Includes predefined obstacles in a 2D space where the robot cannot traverse.
 - **Dynamic Obstacle Clearance and Robot Radius**: Users can input the obstacle clearance and the robot's radius to adjust the navigable space dynamically.
-- **A* Pathfinding Algorithm**: Utilizes the A* algorithm to find the shortest path from a start point to a goal point, considering the robot's orientation.
+- **A\* Pathfinding Algorithm**: Utilizes the A* algorithm to find the shortest path from a start point to a goal point, considering the robot's orientation.
 - **Visualization and Video Generation**: Outputs visualizations of the obstacle space, the explored nodes, the optimal path, and a video showing the step-by-step pathfinding process.
 
 ## Dependencies
@@ -52,7 +52,7 @@ pip install numpy matplotlib opencv-python
 - **Node Representation**: The script uses a `Node` class to represent each state with attributes for coordinates, orientation, cost, and parent node.
 - **Action Set**: Defines possible moves for the robot with specified orientations and step sizes, calculating the new state and cost.
 - **Obstacle Space**: Initializes a 2D array representing the obstacle space, marking obstacles and boundaries based on the given clearance and robot radius.
-- **A* Algorithm**: Implements the A* search algorithm to explore nodes, using a priority queue to select the next node based on the lowest cost + heuristic value.
+- **A\* Algorithm**: Implements the A* search algorithm to explore nodes, using a priority queue to select the next node based on the lowest cost + heuristic value.
 - **Backtracking and Visualization**: Once the goal node is reached, the script backtracks from the goal to the start to determine the path taken and generates visualizations.
 
 ## Limitations and Recommendations
