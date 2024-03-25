@@ -224,7 +224,6 @@ def a_star_algorithm(start,goal,obs_space_array,step_size):
                 unexplored_nodes[new_node_id] = new_node
             
             heapq.heappush(priority_list, [(new_node.cost + new_node.cost_to_go), new_node]) 
-
     return  all_nodes,0
 
 # backtracking the path and getting the "reversed" path
@@ -251,31 +250,31 @@ def backtrack_path(goal_node):
 # Plotting and capturing the progress
 def plot(start_node, goal_node, x_path, y_path, all_nodes, obs_space_array, frame_count, ideal_path):
     plt.figure()
-    plt.plot(start_node.x, start_node.y, "Dw")
-    plt.plot(goal_node.x, goal_node.y, "Dg")
+    plt.plot(start_node.x, start_node.y, "Dw")  # Mark start
+    plt.plot(goal_node.x, goal_node.y, "Dg")  # Mark goal
 
     # Plotting the canvas
-    plt.imshow(obs_space_array, "GnBu")
+    plt.imshow(obs_space_array, cmap="GnBu")
     ax = plt.gca()
-    ax.invert_yaxis() # Y-axis inversion
-    
-    # plotting all the visited nodes
-    for i in range(len(all_nodes)):
-        plt.plot(all_nodes[i][0], all_nodes[i][1], "2g-")
+    ax.invert_yaxis()  # Y-axis inversion to match coordinate system
 
-    # Plotting the final path once all nodes are plotted
-    if ideal_path:  # Checks if 'yes'
-        plt.plot(x_path[:frame_count+1], y_path[:frame_count+1], ':r')
+    # Plotting all visited nodes if needed
+    for node in all_nodes:
+        plt.plot(node[0], node[1], "2g-", markersize=1)  # Small green dots for visited nodes
 
-    # Saving each frame as an image
-    plt.savefig(f"frame_{frame_count}.png")
+    # Plotting the final path with more visibility
+    if ideal_path:
+        plt.plot(x_path[:frame_count + 1], y_path[:frame_count + 1], '-r', linewidth=2)  # Red solid line for path
+
+    plt.savefig(f"frame_{frame_count:04d}.png")  # Save frame with zero-padded frame count
     plt.close()
 
 # Creating video from all the saved frames
 def generate_video(frame_prefix, generate_video_path, frame_rate):
     frames = []
     frame_files = [f for f in os.listdir() if f.startswith(frame_prefix) and f.endswith('.png')]
-    frame_files.sort(key=lambda x: int(x.split('_')[1].split('.')[0]))  # Sorting the frames by the frame number
+    
+    frame_files.sort(key= lambda x: int(x.split('_')[1].split('.')[0]))  # Sorting the frames by the frame number
     for frame_file in frame_files:
         frames.append(cv2.imread(frame_file))
         os.remove(frame_file)  # Deleting the frames after appending them to the video
@@ -370,7 +369,7 @@ if __name__ == '__main__':
             print("Generating video: ", 70+int((i/len(x_path))*30), "%")
 
     # Create video from saved frames
-    generate_video("frame", "output_video.mp4", 30)  # Default frame rate=30
+    generate_video("frame", "output_video.mp4", 30)  
 
     timer_stop = time.time()
     C_time = timer_stop - timer_start
