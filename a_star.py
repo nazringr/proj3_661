@@ -9,13 +9,13 @@ import heapq
 import os
 import cv2
 
-# Initialising the class for our "Node" objects
+# Initializing the class for our "Node" objects
 class Node:
 
-    def __init__(self, x, y, theta, cost, parent_id, cost_to_go = 0):
+    def __init__(self, x, y, orient, cost, parent_id, cost_to_go = 0):
         self.x = x
         self.y = y
-        self.theta = theta
+        self.orient = orient
         self.cost = cost
         self.parent_id = parent_id
         self.cost_to_go = cost_to_go 
@@ -23,104 +23,104 @@ class Node:
     def __lt__(self,other):
         return self.cost + self.cost_to_go < other.cost + other.cost_to_go
 
-# Defining action set, and calculating costs
-def move_ext_up(x,y,theta,step_size, cost):
-    theta = theta + 60
-    x = x + (step_size*np.cos(np.radians(theta)))
-    y = y + (step_size*np.sin(np.radians(theta)))
+# Defining the action set, and calculating the costs
+def move_60up(x,y,orient,step_size, cost):
+    orient = orient + 60
+    x = x + (step_size*np.cos(np.radians(orient)))
+    y = y + (step_size*np.sin(np.radians(orient)))
     x = round(x)
     y = round(y)
     cost = 1 + cost
-    return x,y,theta,cost
+    return x,y,orient,cost
 
-def move_ext_down(x,y,theta, step_size, cost):
-    theta = theta - 60
-    x = x + (step_size*np.cos(np.radians(theta)))
-    y = y + (step_size*np.sin(np.radians(theta)))
+def move_60down(x,y,orient, step_size, cost):
+    orient = orient - 60
+    x = x + (step_size*np.cos(np.radians(orient)))
+    y = y + (step_size*np.sin(np.radians(orient)))
     x = round(x)
     y = round(y)
     cost = 1 + cost
-    return x,y,theta,cost
+    return x,y,orient,cost
 
-def move_up(x,y,theta, step_size, cost):
-    theta = theta + 60
-    x = x + (step_size*np.cos(np.radians(theta)))
-    y = y + (step_size*np.sin(np.radians(theta)))
+def move_30up(x,y,orient, step_size, cost):
+    orient = orient + 60
+    x = x + (step_size*np.cos(np.radians(orient)))
+    y = y + (step_size*np.sin(np.radians(orient)))
     x = round(x)
     y = round(y)
     cost = 1 + cost
-    return x,y,theta, cost
+    return x,y,orient, cost
 
-def move_down(x,y,theta, step_size, cost):
-    theta = theta - 30
-    x = x + (step_size*np.cos(np.radians(theta)))
-    y = y + (step_size*np.sin(np.radians(theta)))
+def move_30down(x,y,orient, step_size, cost):
+    orient = orient - 30
+    x = x + (step_size*np.cos(np.radians(orient)))
+    y = y + (step_size*np.sin(np.radians(orient)))
     x = round(x)
     y = round(y)
     cost = 1 + cost
-    return x,y,theta, cost
+    return x,y,orient, cost
 
-def move_straight(x,y,theta, step_size, cost):
-    theta = theta + 0
-    x = x + (step_size*np.cos(np.radians(theta)))
-    y = y + (step_size*np.sin(np.radians(theta)))
+def move_straight(x,y,orient, step_size, cost):
+    orient = orient + 0
+    x = x + (step_size*np.cos(np.radians(orient)))
+    y = y + (step_size*np.sin(np.radians(orient)))
     x = round(x)
     y = round(y)
     cost = 1 + cost
-    return x,y,theta, cost
+    return x,y,orient, cost
 
-# Initialising the action set function
-def Action_set(move,x,y,theta,step_size,cost):
+# Initializing the action set functions
+def Action_set(move,x,y,orient,step_size,cost):
 
     if move == 'extreme_right':
-        return move_ext_up(x,y,theta, step_size,cost)
+        return move_60up(x,y,orient, step_size,cost)
     elif move == 'right':
-        return move_up(x,y,theta, step_size,cost)
+        return move_30up(x,y,orient, step_size,cost)
     elif move == 'straight':
-        return move_straight(x,y,theta,step_size,cost)
+        return move_straight(x,y,orient,step_size,cost)
     elif move == 'left':
-        return move_down(x,y,theta,step_size,cost)
+        return move_30down(x,y,orient,step_size,cost)
     elif move == 'extreme_left':
-        return move_ext_down(x,y,theta,step_size,cost)
+        return move_60down(x,y,orient,step_size,cost)
     else:
         return None
 
-#Initialising the "arena" with obstacle definitions
-def obstacle_space(width, height, clearance, robot_radius):
+#Initializing the canvas with the obstacle definitions
+def obstacle_space(width, height, total_clearance, robot_radius):
 
     obs_space_array = np.full((height,width),0)
     
     for y in range(height) :
         for x in range(width):
         
-            # Boundry clearance buffer
-            if x<clearance+robot_radius or x>width-(clearance+robot_radius) or y<clearance+robot_radius or y>height-(clearance+robot_radius):
-                obs_space_array[y,x] = 1  # Fill as obstacle
+            # Boundary total_clearance with buffer
+            if x<total_clearance+robot_radius or x>width-(total_clearance+robot_radius) or y<total_clearance+robot_radius or y>height-(total_clearance+robot_radius):
+                obs_space_array[y,x] = 1  # Filled as obstacle
 
-            # Rightmost U shaped obstace
-            if x>900-clearance+robot_radius and x<1100+clearance+robot_radius and y>50-(clearance+robot_radius) and y<125+clearance+robot_radius:
+            # Rightmost mirrored C shaped obstacle
+            if x>900-total_clearance+robot_radius and x<1100+total_clearance+robot_radius and y>50-(total_clearance+robot_radius) and y<125+total_clearance+robot_radius:
                 obs_space_array[y,x] = 1
-            if x>1020-(clearance+robot_radius) and x<1100+clearance+robot_radius and y>125-(clearance+robot_radius) and y<375+clearance+robot_radius:
+            if x>1020-(total_clearance+robot_radius) and x<1100+total_clearance+robot_radius and y>125-(total_clearance+robot_radius) and y<375+total_clearance+robot_radius:
                 obs_space_array[y,x] = 1      
-            if x>900-(clearance+robot_radius) and x<1100+clearance+robot_radius and y>375-(clearance+robot_radius) and y<450+clearance+robot_radius:
+            if x>900-(total_clearance+robot_radius) and x<1100+total_clearance+robot_radius and y>375-(total_clearance+robot_radius) and y<450+total_clearance+robot_radius:
                 obs_space_array[y,x] = 1  
 
-            # Left rectangle obstace
-            if x>100-(clearance+robot_radius) and x<175+clearance+robot_radius and y>100-(clearance+robot_radius):
+            # Left rectangle obstacle
+            if x>100-(total_clearance+robot_radius) and x<175+total_clearance+robot_radius and y>100-(total_clearance+robot_radius):
                 obs_space_array[y,x] = 1
 
-            # Right rectangle obstace
-            if x>275-(clearance+robot_radius) and x<350+clearance+robot_radius and y<400+clearance+robot_radius:
+            # Right rectangle obstacle
+            if x>275-(total_clearance+robot_radius) and x<350+total_clearance+robot_radius and y<400+total_clearance+robot_radius:
                 obs_space_array[y,x] = 1
 
             # Hexagonal obstacle
-            # Appropriate clearance buffer has been added to the  
-            # incercept values for simpler implementation
-            if x<785+(clearance+robot_radius) and x>515-(clearance+robot_radius):
-                if 1.73*y+x-(1342.25+2*(clearance+robot_radius))<0:
-                    if 1.73*y+x-(823-2*(clearance+robot_radius))>0:
-                        if 1.73*y-x-(42+2*(clearance+robot_radius))<0:
-                            if 1.73*y-x+477.25+2*(clearance+robot_radius)>0:
+            # Appropriate total_clearance buffer has been added to the  
+            # intercept values for simpler implementation
+            if x<785+(total_clearance+robot_radius) and x>515-(total_clearance+robot_radius):
+                if 1.73*y+x-(1342.25+2*(total_clearance+robot_radius))<0:
+                    if 1.73*y+x-(823-2*(total_clearance+robot_radius))>0:
+                        if 1.73*y-x-(42+2*(total_clearance+robot_radius))<0:
+                            if 1.73*y-x+477.25+2*(total_clearance+robot_radius)>0:
                                 obs_space_array[y,x] = 1              
     
     return obs_space_array
@@ -130,18 +130,18 @@ def key(node):
     key = 1022*node.x + 111*node.y 
     return key
 
-# Check whether goal is reached or not
+# Checking whether the goal is reached or not
 def goal_reached(present, goal):
     
     dt = dist((present.x, present.y), (goal.x, goal.y))             
 
-    if dt < 1.5 and present.theta == goal.theta:    # Goal threshold. Given=1.5
+    if dt < 1.5 and present.orient == goal.orient:    # Goal threshold. Given=1.5
         return True
     else:
         return False
     
 # Checking for the move validity on boundary conditions
-def valid_move(x, y, obs_space_array):
+def avail_move(x, y, obs_space_array):
 
     e = obs_space_array.shape
 
@@ -156,10 +156,12 @@ def valid_move(x, y, obs_space_array):
             pass
     return True
 
-# Check valid orientation
-def valid_orientation(theta):
-    if((theta%30)==0):
-        return theta
+# Checking for valid orientation
+def valid_orientation(orient):
+    if((orient%30) == 0):
+        return orient
+    elif(orient == 0):
+        return orient
     else:
         return False
 
@@ -172,25 +174,25 @@ def a_star_algorithm(start,goal,obs_space_array,step_size):
     goal_node = goal
     start_node = start
     
-    possible_moves = ['extreme_right','right', 'straight', 'left', 'extreme_left']   
-    nodes_unexplored = {}  # List of all open nodes
+    available_moves = ['extreme_right','right', 'straight', 'left', 'extreme_left']   
+    unexplored_nodes = {}  # List of all open nodes
     
     start_key = key(start_node) # New key for pointing new node
-    nodes_unexplored[(start_key)] = start_node
+    unexplored_nodes[(start_key)] = start_node
     
     nodes_explored = {} #List of all closed nodes
     priority_list = []  #List to store all dictionary entries with cost as the sorting variable
     heapq.heappush(priority_list, [start_node.cost, start_node]) # Least cost entries will be prioritized
     
-    all_nodes = [] #stores all nodes that have been traversed, for visualization purposes.
+    all_nodes = [] #storing all the nodes that have been traversed, for visualization purposes.
 
     while (len(priority_list) != 0):
 
         current_node = (heapq.heappop(priority_list))[1]
-        all_nodes.append([current_node.x, current_node.y, current_node.theta])          
+        all_nodes.append([current_node.x, current_node.y, current_node.orient])          
         current_id = key(current_node)
 
-        # If goal reached
+        # If the goal is reached
         if goal_reached(current_node, goal_node):
             goal_node.parent_id = current_node.parent_id
             goal_node.cost = current_node.cost
@@ -202,37 +204,37 @@ def a_star_algorithm(start,goal,obs_space_array,step_size):
         else:
             nodes_explored[current_id] = current_node
         
-        del nodes_unexplored[current_id]
+        del unexplored_nodes[current_id]
 
-        for move in possible_moves:
-            x,y,theta,cost = Action_set(move,current_node.x,current_node.y,current_node.theta, step_size, current_node.cost)  
+        for move in available_moves:
+            x,y,orient,cost = Action_set(move,current_node.x,current_node.y,current_node.orient, step_size, current_node.cost)  
             
-            # Calculate cost to go
+            # Calculating the cost-to-go
             cost_to_go = dist((x, y), (goal.x, goal.y))  
 
-            new_node = Node(x,y,theta, cost,current_node, cost_to_go)   
+            new_node = Node(x,y,orient, cost,current_node, cost_to_go)   
 
             new_node_id = key(new_node) 
 
-            if not valid_move(new_node.x, new_node.y, obs_space_array):
+            if not avail_move(new_node.x, new_node.y, obs_space_array):
                 continue
             elif new_node_id in nodes_explored:
                 continue
 
             # If unvisited node
-            if new_node_id in nodes_unexplored:
-                if new_node.cost < nodes_unexplored[new_node_id].cost: 
-                    nodes_unexplored[new_node_id].cost = new_node.cost
-                    nodes_unexplored[new_node_id].parent_id = new_node.parent_id
+            if new_node_id in unexplored_nodes:
+                if new_node.cost < unexplored_nodes[new_node_id].cost: 
+                    unexplored_nodes[new_node_id].cost = new_node.cost
+                    unexplored_nodes[new_node_id].parent_id = new_node.parent_id
             else:
-                nodes_unexplored[new_node_id] = new_node
+                unexplored_nodes[new_node_id] = new_node
             
             heapq.heappush(priority_list, [(new_node.cost + new_node.cost_to_go), new_node]) 
 
     return  all_nodes,0
 
-# Backtracking and getting the "reversed" path
-def Backtrack(goal_node):  
+# backtracking the path and getting the "reversed" path
+def backtrack_path(goal_node):  
     x_path = []
     y_path = []
     x_path.append(goal_node.x)
@@ -258,7 +260,7 @@ def plot(start_node, goal_node, x_path, y_path, all_nodes, obs_space_array, fram
     plt.plot(start_node.x, start_node.y, "Dw")
     plt.plot(goal_node.x, goal_node.y, "Dg")
 
-    # Plots the "arena"
+    # Plotting the canvas
     plt.imshow(obs_space_array, "GnBu")
     ax = plt.gca()
     ax.invert_yaxis() # Y-axis inversion
@@ -271,106 +273,101 @@ def plot(start_node, goal_node, x_path, y_path, all_nodes, obs_space_array, fram
     if ideal_path:  # Checks if 'yes'
         plt.plot(x_path[:frame_count+1], y_path[:frame_count+1], ':r')
 
-    # Save each frame as an image
+    # Saving each frame as an image
     plt.savefig(f"frame_{frame_count}.png")
     plt.close()
 
 # Creating video from all the saved frames
-def output_video(frame_prefix, output_video_path, frame_rate):
+def generate_video(frame_prefix, generate_video_path, frame_rate):
     frames = []
     frame_files = [f for f in os.listdir() if f.startswith(frame_prefix) and f.endswith('.png')]
-    frame_files.sort(key=lambda x: int(x.split('_')[1].split('.')[0]))  # Sort files by frame number
+    frame_files.sort(key=lambda x: int(x.split('_')[1].split('.')[0]))  # Sorting the frames by the frame number
     for frame_file in frame_files:
         frames.append(cv2.imread(frame_file))
-        os.remove(frame_file)  # Delete the frames after appending it to the video
+        os.remove(frame_file)  # Deleting the frames after appending them to the video
 
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    write_video = cv2.VideoWriter(output_video_path, fourcc, frame_rate, (frames[0].shape[1], frames[0].shape[0]))
+    write_video = cv2.VideoWriter(generate_video_path, fourcc, frame_rate, (frames[0].shape[1], frames[0].shape[0]))
 
-    # Write frames to video
+    # Writing the frames to video
     for frame in frames:
         write_video.write(frame)
 
     # Releasing the video writer
     write_video.release()
     cv2.destroyAllWindows()
-
-# Main function
+    
 if __name__ == '__main__':
     
-    # Input the desired clearance
-    clearance = input("Input the obstacle clearance: ")
-    clearance = int(clearance)
+    # Taking Input of the desired total_clearance
+    total_clearance = input("Please input the obstacle clearance: ")
+    total_clearance = int(total_clearance)
     
-    # Input the desired radius of the robot
-    robot_radius = input("Input the Robot Radius: ") 
+    # Taking Input of the desired radius of the robot
+    robot_radius = input("Please input the Robot Radius: ") 
     robot_radius = int(robot_radius)
     
-    # Input the desired step size for A*
-    robot_step_size = input("Input the Robot Step size: ")
+    # Taking Input of the desired step size for A*
+    robot_step_size = input("Please input the Robot Step size(between 1 to 10): ")
     robot_step_size = int(robot_step_size)
     
     width = 1200
     height = 500
-    obs_space_array = obstacle_space(width, height, clearance, robot_radius)
-    cost_to_go = 0 # Cost to Go
+    obs_space_array = obstacle_space(width, height, total_clearance, robot_radius)
+    cost_to_go = 0 # Cost-to-Go
     
-    # Input the desired starting coordinates
-    start_coordinates = input("Enter coordinates for Start Node(space separated): ")
-    s_x, s_y = start_coordinates.split()
-    s_x = int(s_x)
-    s_y = int(s_y)
+    # Taking Input of the desired starting coordinates
+    s_x = int(input("Enter the x coordinate for the Start Node: "))
+    s_y = int(input("Enter the y coordinate for the Start Node: "))
 
-    # Check if it's a valid move
-    if not valid_move(s_x, s_y, obs_space_array):
+    # Checking if it's a valid move
+    if not avail_move(s_x, s_y, obs_space_array):
         print("Start node is out of bounds(or in obstacle zone)")
         exit(-1)
 
-    # Input the desired starting orientation of the robot
-    s_theta = input("Enter Orientation of the robot at start node: ")
-    s_t = int(s_theta)
+    # Taking Input of the desired starting orientation of the robot
+    s_orient = input("Enter Orientation of the robot at start node: ")
+    s_t = int(s_orient)
     
     # Check if it's a valid orientation
     if not valid_orientation(s_t):
         print("Please enter a multiple of 30")
         exit(-1)
             
-    # Input the desired goal coordinates 
-    goal_coordinates = input("Enter coordinates for Goal Node: ")
-    g_x, g_y = goal_coordinates.split()
-    g_x = int(g_x)
-    g_y = int(g_y)
+    # Taking Input of the desired goal coordinates 
+    g_x = int(input("Enter the x-coordinate for the Goal Node: "))
+    g_y = int(input("Enter the y-coordinate for the Goal Node: "))
     
-    ## Check if it's a valid move
-    if not valid_move(g_x, g_y, obs_space_array):
+    ## Checking if it's a valid move
+    if not avail_move(g_x, g_y, obs_space_array):
         print("Goal node is out of bounds(or in obstacle zone)")
         exit(-1)
 
-    # Input the desired goal orientation of the robot
-    g_theta = input("Enter Orientation of the robot at goal node: ")
-    g_t = int(g_theta)
+    # Taking input of the desired goal orientation of the robot
+    g_orient = input("Enter the Orientation of the robot at the goal node: ")
+    g_t = int(g_orient)
 
-    ## Check if it's a valid orientation
+    ## Checking if it's a valid orientation
     if not valid_orientation(g_t):
         print("Please enter a multiple of 30")
         exit(-1)
 
-    #Timer to calculate the processing time
+    # Set Timer to calculate the processing time
     timer_start = time.time()
     
-    # Initialising the start and goal node 
+    # Initializing the start and goal node 
     start_node = Node(s_x, s_y,s_t, 0.0, -1,cost_to_go)
     goal_node = Node(g_x, g_y,g_t, 0.0, -1, cost_to_go)
     all_nodes,flag = a_star_algorithm(start_node, goal_node, obs_space_array, robot_step_size)
     
-    # Calculate the optimal backtracking path from start to goal 
+    # Calculating the optimal path from start to the goal node 
     if (flag)==1:
-        x_path,y_path = Backtrack(goal_node)
+        x_path,y_path = backtrack_path(goal_node)
     else:
         print("No path could be found")
         
     # Plotting the exploration, and the final path
-    frame_count = 0  # Initialize frame count
+    frame_count = 0  # Initializing frame count
     for i in range(len(all_nodes)):
         plot(start_node, goal_node, x_path, y_path, all_nodes[:i+1], obs_space_array, frame_count, ideal_path=False)
         frame_count += 1
@@ -383,8 +380,8 @@ if __name__ == '__main__':
         if(frame_count%15==0):
             print("Generating video: ", 70+int((i/len(x_path))*30), "%")
 
-    # Create video from saved frames
-    output_video("frame", "output_video.mp4", 30)  # Default frame rate=30
+    # Creating the video from the saved frames
+    generate_video("frame", "generate_video.mp4", 30)  # Default frame rate = 30
 
     timer_stop = time.time()
     C_time = timer_stop - timer_start
